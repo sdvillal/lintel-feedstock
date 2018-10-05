@@ -1,0 +1,50 @@
+{% set name = "lintel" %}
+{% set build_number = "0" %}
+
+{% set version = "0.0.20180822" %}
+{% set commit = "71a9147ce8f67fc98bbda025c564007d21a0a4e6" %}
+{% set sha256 = "42ffcc059c44472b05bff44930852168077b37fcc5f564377eccb97537c25176" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  fn: {{ name }}-{{ version }}.tar.gz
+  url: https://github.com/dukebw/lintel/archive/{{ commit }}.tar.gz
+  sha256: {{ sha256 }}
+
+build:
+  number: {{ build_number }}
+  skip: True  # [not linux or py2k]
+  script:
+    - "export CFLAGS='-std=c99'"
+    - "{{ PYTHON }} -m pip install . --no-deps --ignore-installed --no-cache-dir -vvv"
+
+requirements:
+  build:
+    - {{ compiler('c') }}
+  host:
+    - python
+    - pip
+    - ffmpeg
+  run:
+    - python
+    - ffmpeg
+    - numpy
+    - matplotlib
+    - click
+
+test:
+  imports:
+    - lintel
+
+about:
+  home: https://github.com/dukebw/lintel
+  license: GPLv3
+  license_file: COPYING
+  summary: 'A Python module to decode video frames directly, using the FFmpeg C API.'
+
+extra:
+  recipe-maintainers:
+    - sdvillal
